@@ -1,0 +1,386 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            serviceHost: 'http://127.0.0.1:8000//_AMapService',
+            securityJsCode: '5365e2c5c8444eb660551aeb15db32cc'
+        }
+    </script>
+    <script type="text/javascript"
+        src="https://webapi.amap.com/maps?v=1.4.15&key=325fb31a083938e57af2de41d3f0c6ff"></script>
+    <style>
+        input {
+            width: 80%;
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+    <div class="header">
+        {{ number }}，欢迎使用本系统。
+        <a href="/map/" class="button">地图</a>
+        <a href="/order/" class="button">订单</a>
+        <a href="/user/" class="button">个人</a>
+        <a href="/logout/" class="button">登出</a>
+    </div>
+    <div class="left-sidebar">
+        <div id="map" style="width: 100%; height: 100%;"></div>
+    </div>
+    <div class="right-sidebar">
+        <h1 class="h1">订单流程</h1>
+
+        {% if ts == 0 %}
+        <h2>请耐心等待接单</h2>
+        <label class="label">起点</label>
+        <input class="input" type="text" readonly value="{{ start }}">
+
+        <label class="label">终点</label>
+        <input class="input" type="text" readonly value="{{ end }}">
+        <label class="label">出发时间</label>
+        <input class="input" type="text" readonly value="{{ starttime }}">
+        <label class="label">预计花费</label>
+        <input class="input" type="text" readonly value="{{ tolls }}元">
+        <form action="/ccorder/" method="post">
+            {% csrf_token %}
+            <button type="submit">取消订单</button>
+        </form>
+
+
+        {% elif ts == 1 %}
+        <h2 class="h2">司机已接单，请耐心等待</h2>
+        <label class="label">起点</label>
+        <input class="input" type="text" readonly value="{{ start }}">
+        <label class="label">终点</label>
+        <input class="input" type="text" readonly value="{{ end }}">
+        <label class="label">出发时间</label>
+        <input class="input" type="text" readonly value="{{ starttime }}">
+        <label class="label">预计花费</label>
+        <input class="input" type="text" readonly value="{{ tolls }}元">
+        <label class="label" onclick="showdriver()">司机</label>
+        <input class="input" type="text" readonly value="{{ driver }}">
+        <form action="/ccorder/" method="post">
+            {% csrf_token %}
+            <button type="submit">取消订单</button>
+        </form>
+
+
+        {% elif ts == 2 %}
+        <form action="/endorder/" method="post">
+            <h2 class="h2">行驶中</h2>
+            {% csrf_token %}
+            <label class="label">终点</label>
+            <input class="input" type="text" readonly value="{{ end }}">
+            <label class="label" onclick="showdriver()">司机</label>
+            <input class="input" type="text" readonly value="{{ driver }}">
+            <label class="label">花费</label>
+            <input class="input" type="text" readonly value="{{ tolls }}元">
+            <label class="label" for="endtime">此时时间</label>
+            <input class="input" type="datetime-local" readonly name="endtime" id="endtime">
+            <label class="label">请为司机服务评分(1-10)</label>
+            <input type="range" class="input" id="mark" name="mark" min="1" max="10" value="5"
+                oninput="showValue(this.value)">
+            <span id="nowmark">5</span>
+            <button type="submit">支付订单</button>
+
+        </form>
+
+
+        {% elif ts == 3 %}
+        <h2 class="h2">下单</h2>
+        <form action="/placeorder/" method="post">
+            {% csrf_token %}
+            <lable class="label">起点</lable>
+            <input class="input" type="text" id="startlocation" name="startlocation" hidden placeholder="请输入起点">
+            <input class="input" type="text" id="start" name="start" placeholder="请输入起点">
+            <label class="label">终点</label>
+            <input class="input" type="text" id="endlocation" name="endlocation" hidden placeholder="请输入终点">
+            <input class="input" type="text" id="end" name="end" placeholder="请输入终点">
+            <lable class="label">出发时间</lable>
+            <input class="input" type="datetime-local" name="starttime" id="starttime">
+            <label class="label">距离</label>
+            <input class="input" type="text" id="distance" name="distance" readonly placeholder="距离">
+            <label class="label">预计花费</label>
+            <input class="input" type="text" id="tolls" name="tolls" readonly placeholder="预计花费">
+            <button type="submit">下单</button>
+        </form>
+
+
+        {% elif ts == 5 %}
+        <h2 class="h2">前往出发地接顾客</h2>
+        <form action="/startorder/" method="post">
+            {% csrf_token %}
+            <label class="label">顾客起点</label>
+            <input class="input" type="text" readonly value="{{ start }}">
+            <label class="label">顾客终点</label>
+            <input class="input" type="text" readonly value="{{ end }}">
+            <label class="label">顾客预计出发时间</label>
+            <input class="input" type="text" readonly value="{{ starttime }}">
+            <input class="input" type="datetime-local" readonly name="starttime" id="starttime" hidden>
+            <label class="label">预计收入</label>
+            <input class="input" type="text" readonly value="{{ tolls }}元">
+
+            <label class="label">顾客手机号后四位</label>
+            <input class="input" name="phone" id="phone" placeholder="后四位">
+            <button type="submit">确定</button>
+        </form>
+        <form action="/ccorder/" method="post">
+            {% csrf_token %}
+            <button type="submit">取消订单</button>
+        </form>
+
+
+
+        {% elif ts == 6 %}
+        <h2 class="h2">行驶中</h2>
+
+        <label class="label">顾客终点</label>
+        <input class="input" type="text" readonly value="{{ end }}">
+        <label class="label">预计收入</label>
+        <input class="input" type="text" readonly value="{{ tolls }}元">
+
+        <h2 class="h2">到达之后，提醒顾客支付订单</h3>
+
+            {% elif ts == 7%}
+            <form action="/getorder/" method="post">
+                <h2 class="h2">接单</h2>
+                {% csrf_token %}
+                <label class="label">目前位置</label>
+                <input class=".checkbox-group input" type="text" id="startlocation" readonly name="startlocation"
+                    hidden="true" placeholder="请输入起点">
+                <input class="input" type="text" id="start" name="start" readonly placeholder="请输入起点">
+                <label class="label">当前时间</label>
+                <input class="input" type="datetime-local" readonly name="starttime" id="starttime">
+                <div class="checkbox-group">
+                    <input class="input" type="checkbox" id="option1" name="type[]" value="1">
+                    <label class="label" for="option1">金钱优先</label>
+                    <input class="input" type="checkbox" id="option2" name="type[]" value="2">
+                    <label class="label" for="option2">距离优先</label>
+                    <input class="input" type="checkbox" id="option3" name="type[]" value="3">
+                    <label class="label" for="option3">时间优先</label>
+
+                </div>
+                <button type="submit">智能接单</button>
+            </form>
+            {% endif %}
+
+    </div>
+
+    <script>
+        var message = "{{ message }}"
+        if (message != "None" && message != "") {
+            document.addEventListener('DOMContentLoaded', function () {
+                alert(message);
+            });
+        }
+    </script>
+    <script>
+        function gettime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+        try { document.getElementById('starttime').value = gettime(); }
+        catch { }
+        try { document.getElementById('endtime').value = gettime(); }
+        catch { }
+    </script>
+    <script>
+        var ts = "{{ ts }}";
+        var start;
+        var end;
+        var distance;
+        var tolls;
+        var map = new AMap.Map('map', {
+            resizeEnable: true,
+            center: [117.000923, 36.675807],
+        });
+        var marker = new AMap.Marker({
+            map: map
+        });
+        var driving;
+
+        //end
+        map.on('contextmenu', function (e) {
+            if (ts == "3") {
+                end = e.lnglat;
+                marker.setPosition(end);
+                try {
+                    driving.clear();
+
+                } catch { }
+                planRoute();
+
+                try {
+                    document.getElementById('endlocation').value = end.getLng().toFixed(3) + ',' + end.getLat().toFixed(3);
+                }
+                catch { }
+                AMap.plugin('AMap.Geocoder', function () {
+                    var geocoder = new AMap.Geocoder();
+                    geocoder.getAddress(end, function (status, result) {
+                        var address = result.regeocode.formattedAddress;
+                        try {
+                            document.getElementById('end').value = address;
+                        } catch { }
+
+
+                    })
+                })
+            }
+        });
+
+        //start
+        map.on('click', function (e) {
+            if (ts == "3") {
+                start = e.lnglat;
+                marker.setPosition(start);
+                try {
+                    driving.clear();
+
+                } catch { }
+                planRoute();
+
+                try {
+                    document.getElementById('startlocation').value = start.getLng().toFixed(3) + ',' + start.getLat().toFixed(3);
+                }
+                catch { }
+                AMap.plugin('AMap.Geocoder', function () {
+                    var geocoder = new AMap.Geocoder();
+                    geocoder.getAddress(start, function (status, result) {
+                        var address = result.regeocode.formattedAddress;
+                        try {
+                            document.getElementById('start').value = address;
+                        } catch { }
+
+
+                    })
+                })
+            }
+        });
+
+        //start
+        function getstartlocation() {
+            map.plugin('AMap.Geolocation', function () {
+                var geolocation = new AMap.Geolocation({
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    buttonPosition: 'RB',
+                    buttonOffset: new AMap.Pixel(10, 20),
+                    zoomToAccuracy: true,
+                });
+                map.addControl(geolocation);
+                AMap.event.addListener(geolocation, 'complete', function (data) {
+                    var lat = data.position.getLat().toFixed(3);
+                    var lng = data.position.getLng().toFixed(3);
+                    start = [lng, lat];
+                    try {
+                        driving.clear();
+                    } catch { }
+                    planRoute();
+                    try { document.getElementById('startlocation').value = lng + ',' + lat; }
+                    catch { }
+                    AMap.plugin('AMap.Geocoder', function () {
+                        var geocoder = new AMap.Geocoder()
+                        geocoder.getAddress(start, function (status, result) {
+                            var address = result.regeocode.formattedAddress;
+                            try {
+                                document.getElementById('start').value = address;
+                            } catch { }
+                        })
+                    })
+                });
+                geolocation.getCurrentPosition();
+            });
+        }
+
+        //route
+        function planRoute() {
+            if (start && end) {
+                AMap.plugin('AMap.Driving', function () {
+                    driving = new AMap.Driving({
+                        map: map,
+                        policy: AMap.DrivingPolicy.LEAST_TIME
+                    });
+                    driving.search(start, end, function (status, result) {
+                        distance = result.routes[0].distance;
+                        tolls = (12 + distance * 0.002).toFixed(2);
+                        try {
+                            document.getElementById('distance').value = distance / 1000 + '公里';
+                            document.getElementById('tolls').value = tolls + '元';
+                        } catch { }
+                    });
+                });
+            }
+        }
+
+
+        function jumpstart() {
+            var location = "{{ startlocation }}";
+            const [longitude, latitude] = location.split(',');
+            end = [parseFloat(longitude), parseFloat(latitude)];
+            planRoute();
+        }
+
+        function jumpend() {
+            var location = "{{ endlocation }}";
+            const [longitude, latitude] = location.split(',');
+            end = [parseFloat(longitude), parseFloat(latitude)];
+            planRoute();
+        }
+
+        getstartlocation();
+        if (ts == 5) {
+            jumpstart();
+        }
+        else if (ts != 3) {
+            jumpend();
+        }
+
+    </script>
+    <script>
+        function showValue(newValue) {
+            document.getElementById("nowmark").innerHTML = newValue;
+        }
+    </script>
+    <script>
+        function showdriver() {
+            document.getElementById('showdriver').showModal();
+        }
+        //document.getElementById('showdriver').close();
+    </script>
+    <dialog class="dialog" id="showdriver">
+        <h2 class="h2">司机信息</h2>
+        <img src="/media/{{ ddriver.photo }}" alt="头像" style="height: 125px;width: 125px;margin-bottom:10px">
+        <input class="input" type="text" readonly value="{{ ddriver.number }}">
+        <label class="label">姓名</label>
+        <input class="input" type="text" id="name" name="name" readonly value="{{ ddriver.name }}">
+        <label class="label">个人简介</label>
+        <input class="input" type="text" id="detail" name="detail" readonly value="{{ ddriver.detail }}">
+        <label class="label">车牌号</label>
+        <input class="input" type="text" id="car" name="car" readonly value="{{ ddriver.car }}">
+        <label class="label">平均评分</label>
+        <input class="input" type="text" readonly value="{{ ddriver.score }}">
+        <label class="label">接单次数</label>
+        <input class="input" type="text" readonly value="{{ ddriver.dorder }}">
+        <button class="button" onclick="document.getElementById('showdriver').close();">关闭</button>
+    </dialog>
+
+</body>
+
+</html>

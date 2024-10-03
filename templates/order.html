@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+    <div class="header">
+        {{number}}，欢迎使用本系统。
+        <a href="/map/" class="button">地图</a>
+        <a href="/order/" class="button">订单</a>
+        <a href="/user/" class="button">个人</a>
+        <a href="/logout/" class="button">登出</a>
+    </div>
+
+    <h1 class="h1">订单信息</h1>
+    {% if orders %}
+    {% for order in orders %}
+    <div class="middle-container" style="width: 200%; height: 100%;">
+        <h2 class="h2">{{ order.endtime }}</h2>
+        <label class="label">司机</label>
+        <input class="input" type="text" readonly value="{{ order.driver }}">
+        <label class="label">客户</label>
+        <input class="input" type="text" readonly value="{{ order.customer }}">
+        <label class="label">开始时间</label>
+        <input class="input" type="text" readonly value="{{ order.starttime }}">
+        <label class="label">结束时间</label>
+        <input class="input" type="text" readonly value="{{ order.endtime }}">
+        <label class="label">起始位置</label>
+        <input class="input" type="text" readonly value="{{ order.start }}">
+        <label class="label">结束位置</label>
+        <input class="input" type="text" readonly value="{{ order.end }}">
+        <label class="label">评分</label>
+        <input class="input" type="text" readonly value="{{ order.mark }}">
+        <label class="label">金额</label>
+        <input class="input" type="text" readonly value="{{ order.tolls }}">
+    </div>
+    {% endfor %}
+    {% else %}
+    <h2 class="h2">目前没有订单</h2>
+    {% endif %}
+
+
+</body>
+<script>
+    var message = "{{ message }}"
+    if (message != "None" && message != "") {
+        document.addEventListener('DOMContentLoaded', function () {
+            alert(message);
+        });
+    }
+</script>
+</html>

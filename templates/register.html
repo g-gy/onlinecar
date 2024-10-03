@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <form class="middle-container" action="/register/" method="POST">
+        <h1 class="h1">注册</h1>
+        {% csrf_token %}
+        <input class="input" type="text" name="number" id="number" placeholder="手机号">
+        <input class="input" type="password" name="password" id="password" placeholder="密码">
+        <input class="input" type="password" name="repassword" id="repassword" placeholder="再次输入密码">
+        <button type="submit" class="button">注册</button>
+    </form>
+</body>
+<script>
+    var message = "{{message}}"
+    if (message != "None" && message != "") {
+        document.addEventListener('DOMContentLoaded', function () {
+            alert(message);
+        });
+    }
+</script>
+
+</html>

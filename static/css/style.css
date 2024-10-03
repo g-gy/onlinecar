@@ -1,0 +1,299 @@
+/* 全局样式变量 */
+:root {
+  --background-image: url('../images/background.jpg');
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --green-transparent: rgba(0, 100, 0, 0.8);
+  --light-green-transparent: rgba(200, 250, 200, 0.5);
+  --lighter-green-transparent: rgba(230, 255, 230, 0.7);
+  --dark-green: #006400;
+  --green: #008000;
+  --light-green: #90EE90;
+  --lighter-green-hover: #98FB98;
+}
+
+body,
+html {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: var(--background-image);
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.header {
+  background-color: var(--green-transparent);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.middle-container,
+.left-sidebar,
+.right-sidebar {
+  background-color: var(--lighter-green-transparent);
+  padding: 50px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.middle-container {
+  width: 500px;
+  height: 300px;
+  margin: 15px 15px 15px 15px;
+}
+
+.left-sidebar,
+.right-sidebar {
+  position: absolute;
+  top: 10%;
+  bottom: 2%;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.left-sidebar {
+  left: 1%;
+  width: 68%;
+}
+
+.right-sidebar {
+  left: 72%;
+  width: 25%;
+}
+
+.h1 {
+  color: var(--dark-green);
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.h2 {
+  color: var(--green);
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.p {
+  width: 80%;
+  background-color: var(--lighter-green-transparent);
+  color: var(--dark-green);
+  border: none;
+  padding: 15px 20px;
+  /* 增加了内边距 */
+  margin: 10px auto;
+  /* 修改了外边距，使其在垂直方向上更加明显 */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  /* 调整了阴影 */
+  transition: box-shadow 0.3s ease;
+  font-size: 1.1em;
+  /* 增加了字体大小 */
+  font-weight: bold;
+  /* 保持粗体样式 */
+  line-height: 1.6;
+  /* 增加了行高，提高可读性 */
+}
+
+
+
+
+button,
+a.button {
+  width: 100%;
+  max-width: 110px;
+  background-color: var(--light-green);
+  color: var(--dark-green);
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+button:hover,
+a.button:hover {
+  background-color: var(--lighter-green-hover);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.links-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+
+.radio-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.radio-group input[type="radio"] {
+  display: none;
+}
+
+.radio-group label {
+  background-color: var(--light-green);
+  color: var(--dark-green);
+  padding: 10px 20px;
+  margin: 0 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  display: inline-block;
+  text-align: center;
+}
+
+.radio-group input[type="radio"]:checked+label {
+  background-color: var(--dark-green);
+  color: white;
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+input {
+  width: 50%;
+  background-color: var(--lighter-green-transparent);
+  color: var(--dark-green);
+  border: none;
+  padding: 10px 15px;
+  margin: 8px 4px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: box-shadow 0.3s ease;
+  text-align: center !important;
+}
+
+input:focus {
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+input::placeholder {
+  color: var(--green);
+  opacity: 0.7;
+}
+
+.label {
+  background-color: var(--light-green);
+  color: var(--dark-green);
+  padding: 10px 20px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  display: inline-block;
+  text-align: center;
+}
+
+.label:hover {
+  background-color: var(--lighter-green-hover);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  /* 添加垂直居中对齐 */
+  margin-top: 20px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  display: none;
+  /* 隐藏原生的勾选框 */
+}
+
+.checkbox-group label {
+  background-color: var(--light-green);
+  color: var(--dark-green);
+  padding: 10px 20px 10px 40px;
+  /* 增加左边距以留出空间放置勾选框 */
+  margin: 0 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  display: inline-block;
+  text-align: left;
+  /* 将文本对齐方式改为左对齐 */
+  position: relative;
+  /* 为伪元素定位 */
+}
+
+.checkbox-group label:before {
+  /* 添加伪元素来模拟勾选框的视觉效果 */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  /* 调整位置使其位于label的左边 */
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border: 2px solid var(--dark-green);
+  /* 添加边框以模拟勾选框 */
+  border-radius: 4px;
+  box-sizing: border-box;
+  /* 确保边框包含在宽度和高度内 */
+}
+
+.checkbox-group input[type="checkbox"]:checked+label:before {
+  background-color: var(--dark-green);
+  /* 当勾选时改变背景颜色 */
+}
+
+.dialog {
+  background-color:rgba(230, 255, 230,0.8);;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0,0.8);
+  width: 400px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-85%, -25%);
+  z-index: 1000;
+}

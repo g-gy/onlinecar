@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <form class="middle-container" action="/login/" method="post">
+        <h1 class="h1">登录</h1>
+
+        {% csrf_token %}
+        <input class="input" type="text" name="number" id="number" placeholder="账号">
+        <input class="input" type="password" name="password" id="password" placeholder="密码">
+        <div class="radio-group">
+        <input class="input" type="radio" id="option1" name="type" value="0">
+        <label for="option1">乘客</label>
+        <input class="input" type="radio" id="option2" name="type" value="1">
+        <label for="option2">司机</label>
+        </div>
+        <button type="submit" class="button">登录</button>
+
+    </form>
+
+    </div>
+</body>
+<script>
+    var message = "{{message}}"
+    if (message != "None" && message != "") {
+        document.addEventListener('DOMContentLoaded', function () {
+            alert(message);
+        });
+    }
+</script>
+
+</html>
